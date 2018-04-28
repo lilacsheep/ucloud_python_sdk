@@ -1,10 +1,15 @@
 # UCloud SDK
 
+## 安装
+```
+python setup.py install
+```
+
 ## 初始化连接
 
 
 ```
-from UCloud import UCloud
+from ucloud_sdk.UCloud import UCloud
 
 ucloud = UCloud('public_key', 'private_key')
 ```
