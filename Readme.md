@@ -159,4 +159,4 @@ share.new_eip() # 在该共享带宽中创建EIP
 
 
 # 1. 待补充 ULB（代码已经有了，但是并未全部实际测试）
-# 2. 基础SDK 为封装成流程式待补充其他SDK， Uredis UDB等，精力有限
+# 2. 基础SDK 为封装成流程式待补充其他SDK， Uredis UDB等
