@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from actions.base import RegionAction
-from client import UcloudException
+from ucloud_sdk.actions.base import RegionAction
+from ucloud_sdk.client import UcloudException
 from addict import Dict
-from actions.umon import GetMetric, GetMetricOverview
+from ucloud_sdk.actions import GetMetric, GetMetricOverview
 
 
 class DescribeUHostInstance(RegionAction):

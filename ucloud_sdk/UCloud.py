@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from actions.uhost import DescribeUHostTags, UHost
-from actions.ulb import ULB
-from actions.eip import EIP
-from actions.sms import SendSms
-from actions.region import GetRegion
-from client import UcloudApiClient
+from ucloud_sdk.actions.uhost import DescribeUHostTags, UHost
+from ucloud_sdk.actions.ulb import ULB
+from ucloud_sdk.actions import EIP
+from ucloud_sdk.actions.sms import SendSms
+from ucloud_sdk.actions import GetRegion
+from ucloud_sdk.client import UcloudApiClient
 from addict import Dict
-from collections import defaultdict
 
 
 class UCloudZone:

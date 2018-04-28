@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from actions.base import RegionAction
+from ucloud_sdk.actions.base import RegionAction
 from addict import Dict
 
 

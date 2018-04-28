@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from actions.base import BaseAction
+from ucloud_sdk.actions.base import BaseAction
 
 
 class GetRegion(BaseAction):

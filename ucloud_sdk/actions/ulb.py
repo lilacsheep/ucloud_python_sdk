@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from actions.base import RegionAction
-from actions.umon import GetMetricOverview, GetMetric
+from ucloud_sdk.actions.base import RegionAction
+from ucloud_sdk.actions import GetMetricOverview, GetMetric
 from addict import Dict
 
 
