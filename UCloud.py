@@ -47,7 +47,6 @@ class UCloud:
         self.public_key, self.private_key = public_key, private_key
         self.zone = UCloudZone(public_key, private_key)
         self.client = UcloudApiClient(public_key=self.public_key, private_key=self.private_key)
-        self.hosts = defaultdict(list)
         self.uhost = UHost(self)
         self.ulb = ULB(self)
         self.eip = EIP(self)
