@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from ucloud_sdk.actions.uhost import DescribeUHostTags, UHost
 from ucloud_sdk.actions.ulb import ULB
-from ucloud_sdk.actions import EIP
+from ucloud_sdk.actions.eip import EIP
 from ucloud_sdk.actions.sms import SendSms
-from ucloud_sdk.actions import GetRegion
+from ucloud_sdk.actions.region import GetRegion
 from ucloud_sdk.client import UcloudApiClient
 from addict import Dict
 

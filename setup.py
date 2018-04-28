@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
 
-setup(name='ucloud_sdk', version='0.1.2',
+setup(name='ucloud_sdk', version='0.1.3',
       py_modules=[
           'ucloud_sdk.actions.base',
           'ucloud_sdk.actions.eip',
