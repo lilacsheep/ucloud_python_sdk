@@ -23,12 +23,6 @@ ucloud.switch_zone('cn-bj2-03')
 ```
 
 
-## 获取当前Zone下所有主机实例
-
-```
-ucloud.uhost.instances
-```
-
 ## 发送短信
 ```
 ucloud.send_sms('1111111,111111,111111,1111', '测试短信')
@@ -37,6 +31,13 @@ ucloud.send_sms('1111111,111111,111111,1111', '测试短信')
 
 
 ## UHost主机操作
+
+### 获取当前Zone下所有主机实例
+
+```
+ucloud.uhost.instances
+```
+
 
 ### Uhost 监控概览
 ```
