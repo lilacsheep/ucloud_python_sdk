@@ -3,7 +3,7 @@
 from ucloud_sdk.actions.base import RegionAction
 from ucloud_sdk.client import UcloudException
 from addict import Dict
-from ucloud_sdk.actions import GetMetric, GetMetricOverview
+from ucloud_sdk.actions.umon import GetMetric, GetMetricOverview
 
 
 class DescribeUHostInstance(RegionAction):
