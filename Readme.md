@@ -11,9 +11,14 @@ python setup.py install
 ```
 from ucloud_sdk.UCloud import UCloud
 
-ucloud = UCloud('public_key', 'private_key')
+ucloud = UCloud('public_key', 'private_key', 'project_id')
+# project_id 为空时会默认使用默认项目
 ```
 
+## 切换Project
+```
+ucloud.switch_project(project_id)
+```
 
 ## 切换zone
 
@@ -163,6 +168,94 @@ share.new_eip() # 在该共享带宽中创建EIP
 ```
 
 
+## ULB 查询和创建
 
-# 1. 待补充 ULB（代码已经有了，但是并未全部实际测试）
-# 2. 基础SDK 为封装成流程式待补充其他SDK， Uredis UDB等
+### 获取当前Zone下ULB
+```
+ucloud.ulb.instances #获取所有ULB实例
+ulb = ucloud.ulb.get(ulb_id) # 通过ULBId获取ULB实例
+ucloud.ulb.mon_overview() # 获取所有ULB监控概览
+```
+
+### ULB 创建
+```
+ucloud.ulb.create(name, mode='OuterMode', tag=None, remark=None, eip_id=None, share_bandwidth=None, eip_type=None)
+# mode 为ULB模式，默认外网模式
+# eip_id 需要绑定到EIPId，需要配合eip_type 海外为: International 国内一般为：Bgp
+# share_bandwidth 需要绑定到共享带宽ID，需要配合eip_type 海外为: International 国内一般为：Bgp
+# 带宽默认为2MB, 暂时为开放调整接口
+```
+
+### ULB实例操作
+暂时未接入SSL的信息和绑定
+
+#### ULB 实例信息
+```
+ulb = ucloud.ulb.get(ulb_id)
+ulb.id # ULBId
+ulb.name # ULB name
+ulb.remark
+ulb.tag
+ulb.create_time
+ulb.ip_set # ULB IPSet 将来会返回EIP实例
+ulb.vserver # 返回ULB下所有VServer实例
+ulb.mon() # 监控信息
+```
+
+
+#### ULB 实例操作
+##### ULB 实例删除
+```
+ulb.delete()
+```
+
+##### VServer 查询与操作
+###### VServer 信息
+```
+vserver = ulb.get_vserver(vserver_id) # 通过VServerId 获取VServer实例
+vserver.id #
+vserver.name #
+vserver.protocol #
+vserver.port #
+vserver.ssl #
+vserver.status #
+vserver.backends #
+```
+
+
+###### VServer 查询
+```
+vserver = ulb.get_vserver(vserver_id) # 通过VServerId 获取VServer实例
+```
+
+###### VServer 操作
+```
+vserver = ulb.create_vserver(name=None, mode=None, _type=None, port=None) #创建 返回VServer实例
+vserver.delete() # 删除VServer
+vserver.reload() # 重载VServer信息
+```
+
+##### Backends 查询与操作
+###### Backends 信息
+```
+vserver = ulb.get_vserver(vserver_id)
+backend = vserver.get_backend(backend_id)
+backend.id # BackendId
+backend.resource # Backend资源，返回Uhost实例和实例转发端口
+backend.status #
+backend.enabled #
+```
+###### Backends 查询
+```
+vserver = ulb.get_vserver(vserver_id) # 通过VServerId 获取VServer实例
+vserver.backends # 当前VServer下所有Backends
+```
+
+###### Backends 操作
+```
+vserver = ulb.get_vserver(vserver_id) # 通过VServerId 获取VServer实例
+backend = vserver.add_backend(self, resource, port, _type='UHost') # 添加Backend resource为Uhost 实例，返回Backend实例
+backend.release() # 释放backend
+```
+
+# TODO: URedis, UDB等

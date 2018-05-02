@@ -6,6 +6,7 @@ from ucloud_sdk.actions.eip import EIP
 from ucloud_sdk.actions.sms import SendSms
 from ucloud_sdk.actions.region import GetRegion
 from ucloud_sdk.client import UcloudApiClient
+from ucloud_sdk.actions.base import GetProjectList, ProjectSet
 from addict import Dict
 
 
@@ -42,10 +43,10 @@ class UCloudZone:
 
 class UCloud:
 
-    def __init__(self, public_key, private_key):
+    def __init__(self, public_key, private_key, project_id=None):
         self.public_key, self.private_key = public_key, private_key
         self.zone = UCloudZone(public_key, private_key)
-        self.client = UcloudApiClient(public_key=self.public_key, private_key=self.private_key)
+        self.client = UcloudApiClient(public_key=self.public_key, private_key=self.private_key, project_id=project_id)
         self.uhost = UHost(self)
         self.ulb = ULB(self)
         self.eip = EIP(self)
@@ -54,10 +55,8 @@ class UCloud:
         action = SendSms(phone, context)
         self.client.get(action)
 
-    @property
-    def tags(self):
-        action = DescribeUHostTags(zone_id=self.zone.id, region_id=self.zone.region)
-        return [Dict(i) for i in self.client.get(action)]
+    def switch_project(self, project_id):
+        self.client.set_project(project_id)
 
     def switch_zone(self, zone_id):
         self.zone.set(zone_id)

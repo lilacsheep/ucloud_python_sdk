@@ -4,6 +4,7 @@ from ucloud_sdk.actions.base import RegionAction
 from ucloud_sdk.client import UcloudException
 from addict import Dict
 from ucloud_sdk.actions.umon import GetMetric, GetMetricOverview
+from ucloud_sdk.actions.ulb import VServerSet, ULBInstance
 
 
 class DescribeUHostInstance(RegionAction):
@@ -201,6 +202,14 @@ class UHostInstance:
     @property
     def storage_type(self):
         return self.info.StorageType
+
+    def add_to_vserver(self, ulb_id, vserver_id, port):
+        ulb = self.request.ulb.get(ulb_id)
+        if isinstance(ulb, ULBInstance):
+            vserver = ulb.get_vserver(vserver_id)
+            if isinstance(vserver, VServerSet):
+                return vserver.add_backend(self.id, port)
+        return None
 
     def reboot(self):
         action = RebootUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)

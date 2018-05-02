@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from addict import Dict
 
 
 class BaseAction:
@@ -41,3 +42,31 @@ class RegionAction(BaseAction):
 
     def set_limit(self, limit):
         self.set_params('Limit', limit)
+
+
+class ProjectSet:
+
+    def __init__(self, **kwargs):
+        self._attrs = Dict(kwargs)
+
+    @property
+    def id(self):
+        return self._attrs.ProjectId
+
+    @property
+    def name(self):
+        return self._attrs.ProjectName
+
+    @property
+    def create_time(self):
+        return self._attrs.CreateTime
+
+    @property
+    def is_default(self):
+        return self._attrs.IsDefault.lower() == 'yes'
+
+
+class GetProjectList(BaseAction):
+    response = 'ProjectSet'
+    uri = 'usub_account'
+    name = 'GetProjectList'
