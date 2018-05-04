@@ -6,15 +6,13 @@ from ucloud_sdk.actions.eip import EIP
 from ucloud_sdk.actions.sms import SendSms
 from ucloud_sdk.actions.region import GetRegion
 from ucloud_sdk.client import UcloudApiClient
-from ucloud_sdk.actions.base import GetProjectList, ProjectSet
 from addict import Dict
 
 
 class UCloudZone:
 
-    def __init__(self, public_key, private_key):
-        self.public_key, self.private_key = public_key, private_key
-        self.client = UcloudApiClient(public_key=self.public_key, private_key=self.private_key)
+    def __init__(self, request):
+        self.request = request
         self.info = Dict()
         self.region = None
         self.id = None
@@ -28,7 +26,7 @@ class UCloudZone:
             raise KeyError
 
     def init_region(self):
-        for info in [Dict(info) for info in self.client.get(GetRegion())]:
+        for info in [Dict(info) for info in self.request.client.get(GetRegion())]:
             if info.IsDefault:
                 self.region = info.Region
                 self.id = info.Zone
@@ -45,8 +43,8 @@ class UCloud:
 
     def __init__(self, public_key, private_key, project_id=None):
         self.public_key, self.private_key = public_key, private_key
-        self.zone = UCloudZone(public_key, private_key)
         self.client = UcloudApiClient(public_key=self.public_key, private_key=self.private_key, project_id=project_id)
+        self.zone = UCloudZone(self)
         self.uhost = UHost(self)
         self.ulb = ULB(self)
         self.eip = EIP(self)
