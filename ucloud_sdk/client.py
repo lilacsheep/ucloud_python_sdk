@@ -67,17 +67,19 @@ class UcloudApiClient:
 
     def __init__(self, public_key, private_key, project_id=None, callback=_callback):
         self.g_params = {'PublicKey': public_key}
+        self.private_key = private_key
+        self.conn = UConnection
+        self.callback = callback
+
         if isinstance(project_id, str):
             self.g_params["ProjectId"] = project_id
             self.project_id = project_id
         else:
             for project in self.get_project()['ProjectSet']:
-                if project['IsDefult'].lower() == 'yes':
+                print(project)
+                if project['IsDefault']:
                     self.project_id = project['ProjectId']
                     self.g_params["ProjectId"] = self.project_id
-        self.private_key = private_key
-        self.conn = UConnection
-        self.callback = callback
 
     def set_project(self, project_id):
         if self.check_projects(project_id):
