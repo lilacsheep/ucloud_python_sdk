@@ -2,14 +2,10 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from urllib.parse import urljoin
-from ucloud_sdk.actions.base import ProjectSet, GetProjectList
 import requests
 from requests import exceptions
 import json.decoder
-
-
-class UcloudException(Exception):
-    pass
+from ucloud_sdk.exception import UCloudException, ProjectNotFound
 
 
 def _verfy_ac(private_key, params: dict):
@@ -60,7 +56,7 @@ def _callback(action, response):
     if response['RetCode'] == 0:
         return response[action.response]
     else:
-        raise UcloudException(response['Message'])
+        raise UCloudException(response['Message'])
 
 
 class UcloudApiClient:
@@ -76,7 +72,6 @@ class UcloudApiClient:
             self.project_id = project_id
         else:
             for project in self.get_project()['ProjectSet']:
-                print(project)
                 if project['IsDefault']:
                     self.project_id = project['ProjectId']
                     self.g_params["ProjectId"] = self.project_id
@@ -84,6 +79,8 @@ class UcloudApiClient:
     def set_project(self, project_id):
         if self.check_projects(project_id):
             self.g_params["ProjectId"] = project_id
+        else:
+            raise ProjectNotFound(project_id)
 
     def check_projects(self, project_id):
         for i in self.get_project()['ProjectSet']:

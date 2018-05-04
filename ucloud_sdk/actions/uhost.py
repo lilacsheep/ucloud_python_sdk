@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from ucloud_sdk.actions.base import RegionAction
-from ucloud_sdk.client import UcloudException
+from ucloud_sdk.exception import UCloudException, UHostNotFound
 from addict import Dict
 from ucloud_sdk.actions.umon import GetMetric, GetMetricOverview
 from ucloud_sdk.actions.ulb import VServerSet, ULBInstance
@@ -95,7 +95,7 @@ class UHostInstance:
         if tcp_connect_num: _metric.append('TcpConnectCount')
 
         if len(_metric) > 10:
-            raise UcloudException(f'Metric Params must be less than 10, now: {len(_metric)}')
+            raise UCloudException(f'Metric Params must be less than 10, now: {len(_metric)}')
 
         action = GetMetric(MetricName=_metric, ResourceType=self._type, ResourceId=self.id,
                            zone_id=self.request.zone.id, region_id=self.request.zone.region)
@@ -255,6 +255,8 @@ class UHost:
         for i in self.instances:
             if i.id == host_id:
                 return i
+        else:
+            raise UHostNotFound(host_id)
 
     def mon_overview(self):
         action = GetMetricOverview('uhost', zone_id=self.request.zone.id, region_id=self.request.zone.region)

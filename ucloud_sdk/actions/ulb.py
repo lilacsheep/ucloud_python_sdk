@@ -3,6 +3,7 @@
 from ucloud_sdk.actions.base import RegionAction
 from ucloud_sdk.actions.umon import GetMetricOverview, GetMetric
 from addict import Dict
+from ucloud_sdk.exception import ULBNotFound
 
 
 class DescribeULB(RegionAction):
@@ -329,10 +330,12 @@ class ULB:
 
         return ulb
 
-    def get(self, ulb_id):
+    def get(self, ulb_id) -> ULBInstance:
         for i in self.instances:
             if i.id == ulb_id:
                 return i
+        else:
+            raise ULBNotFound(ulb_id)
 
     def mon_overview(self):
         action = GetMetricOverview(self._type, zone_id=self.request.zone.id, region_id=self.request.zone.region)
