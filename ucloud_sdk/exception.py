@@ -7,21 +7,25 @@ class UCloudException(Exception):
     pass
 
 
-class UHostNotFound(Exception):
+class UHostNotFound(UCloudException):
     pass
 
 
-class EIPNotFound(Exception):
+class EIPNotFound(UCloudException):
     pass
 
 
-class ULBNotFound(Exception):
+class ULBNotFound(UCloudException):
     pass
 
 
-class ProjectNotFound(Exception):
+class ProjectNotFound(UCloudException):
     pass
 
 
-class ShareBandwidthFound(Exception):
+class ShareBandwidthNotFound(UCloudException):
+    pass
+
+
+class VServerNotFound(UCloudException):
     pass

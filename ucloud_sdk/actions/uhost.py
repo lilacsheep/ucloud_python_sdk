@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from ucloud_sdk.actions.base import RegionAction
-from ucloud_sdk.exception import UCloudException, UHostNotFound
-from addict import Dict
-from ucloud_sdk.actions.umon import GetMetric, GetMetricOverview
-from ucloud_sdk.actions.ulb import VServerSet, ULBInstance
+
+__all__ = ['DescribeUHostInstance', 'StopUHostInstance', 'CreateUHostInstance', 'StartUHostInstance', 'RebootUHostInstance',
+           'ModifyUHostInstanceRemark', 'CreateUHostInstanceSnapshot', 'ModifyUHostInstanceName', 'ModifyUHostInstanceTag',
+           'DescribeUHostTags'
+           ]
+
+
+UHostType = ['Normal', 'SSD', 'BigData', 'GPU', 'GPU_G2',]
+ChargeType = ['Year', 'Month', 'Dynamic']
+StorageType = ['LocalDisk', 'UDisk']
+DiskSpace = [i*10 for i in range(101)]
+CPU = [2**i for i in range(5)]
+Memory = [2**i for i in range(11, 17)]
 
 
 class DescribeUHostInstance(RegionAction):
@@ -22,8 +31,71 @@ class StopUHostInstance(RegionAction):
     uri = '/'
     response = 'UHostId'
 
+    def __init__(self, host_id, **kwargs):
+        super(StopUHostInstance, self).__init__(**kwargs)
+        self.set_host_id(host_id)
+
     def set_host_id(self, host_id):
         self.set_params('UHostId', host_id)
+
+
+class CreateUHostInstance(RegionAction):
+    name = 'CreateUHostInstance'
+    uri = '/'
+    response = 'RetCode'
+
+    def __init__(self, image_id, password, **kwargs):
+        super(CreateUHostInstance, self).__init__(**kwargs)
+        self.set_base_image(image_id)
+        self.set_password(password)
+
+    def set_tag(self, tag):
+        self.set_params('Tag', tag)
+
+    def set_name(self, name):
+        self.set_params('Name', name)
+
+    def set_charge_type(self, charge_type='Month'):
+        assert charge_type in ChargeType
+        self.set_params('ChargeType', charge_type)
+
+    def set_quantity(self, quantity=1):
+        self.set_params('Quantity', quantity)
+
+    def set_charge_month_end(self):
+        self.set_params('Quantity', 0)
+
+    def set_uhost_type(self, uhost_type):
+        self.set_params('UHostType', uhost_type)
+
+    def set_cpu(self, num=4):
+        assert num in CPU
+        self.set_params('CPU', num)
+
+    def set_memory(self, num=8192):
+        assert num in Memory
+        self.set_params('Memory', num)
+
+    def set_gpu(self, num=1):
+        assert num in [1, 2, 3, 4]
+        self.set_params('GPU', num)
+
+    def set_base_image(self, image_id):
+        self.set_params('ImageId', image_id)
+
+    def set_login_mode(self, mode='Password'):
+        self.set_params('LoginMode', mode)
+
+    def set_password(self, password):
+        self.set_params('Password', password)
+
+    def set_boot_disk_space(self, num=10):
+        self.set_params('BootDiskSpace', num)
+
+    def set_disk_space(self, num=20):
+        assert num in DiskSpace
+        self.set_params('DiskSpace', num)
+
 
 
 class StartUHostInstance(StopUHostInstance):
@@ -37,6 +109,10 @@ class RebootUHostInstance(StopUHostInstance):
 class ModifyUHostInstanceRemark(StopUHostInstance):
     name = 'ModifyUHostInstanceRemark'
 
+    def __init__(self, remark, *args, **kwargs):
+        super(ModifyUHostInstanceRemark, self).__init__(*args, **kwargs)
+        self.set_remark(remark)
+
     def set_remark(self, value):
         self.set_params('Remark', value)
 
@@ -49,6 +125,10 @@ class CreateUHostInstanceSnapshot(StopUHostInstance):
 class ModifyUHostInstanceName(StopUHostInstance):
     name = 'ModifyUHostInstanceName'
 
+    def __init__(self, name, *args, **kwargs):
+        super(ModifyUHostInstanceName, self).__init__(*args, **kwargs)
+        self.set_name(name)
+
     def set_name(self, name):
         self.set_params('Name', name)
 
@@ -56,8 +136,12 @@ class ModifyUHostInstanceName(StopUHostInstance):
 class ModifyUHostInstanceTag(StopUHostInstance):
     name = 'ModifyUHostInstanceTag'
 
-    def set_tag(self, name):
-        self.set_params('Tag', name)
+    def __init__(self, tag, *args, **kwargs):
+        super(ModifyUHostInstanceTag, self).__init__(*args, **kwargs)
+        self.set_tag(tag)
+
+    def set_tag(self, tag):
+        self.set_params('Tag', tag)
 
 
 class DescribeUHostTags(RegionAction):
@@ -65,196 +149,3 @@ class DescribeUHostTags(RegionAction):
     response = 'TagSet'
 
 
-class UHostInstance:
-    _type = 'uhost'
-    _mon_metric = ['CPUUtilization', 'IORead', 'IOWrite', 'DiskReadOps', 'DiskWriteOps', 'NICIn',
-              'NICOut', 'NetPacketIn', 'NetPacketOut', 'MemUsage', 'RootSpaceUsage', 'DataSpaceUsage', 'ReadonlyDiskCount',
-              'RunnableProcessCount', 'BlockProcessCount', 'ProcessCount', 'TcpConnectCount']
-
-    def __init__(self, request, **kwargs):
-        self.info = Dict(kwargs)
-        self.request = request
-
-    def mon(self, cpu=False, root_disk=False, data_disk=False, io_read=False, io_write=False, disk_ops=False,
-            net_in=False, net_out=False, net_pack_in=False, net_pack_out=False, memory=False, alive_process=False,
-            block_process=False, tcp_connect_num=False):
-        _metric = []
-        if cpu: _metric.append('CPUUtilization')
-        if root_disk: _metric.append('RootSpaceUsage')
-        if data_disk: _metric.append('DataSpaceUsage')
-        if io_read: _metric.append('IORead')
-        if io_write: _metric.append('IOWrite')
-        if disk_ops: _metric.append('DiskWriteOps')
-        if net_in: _metric.append('NICIn')
-        if net_out: _metric.append('NICOut')
-        if net_pack_in: _metric.append('NetPacketIn')
-        if net_pack_out: _metric.append('NetPacketOut')
-        if memory: _metric.append('MemUsage')
-        if alive_process: _metric.append('ProcessCount')
-        if block_process: _metric.append('BlockProcessCount')
-        if tcp_connect_num: _metric.append('TcpConnectCount')
-
-        if len(_metric) > 10:
-            raise UCloudException(f'Metric Params must be less than 10, now: {len(_metric)}')
-
-        action = GetMetric(MetricName=_metric, ResourceType=self._type, ResourceId=self.id,
-                           zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        return self.request.client.get(action)
-
-    @property
-    def net_cards(self):
-        return self.info.IPSet
-
-    @property
-    def private_ip(self):
-        return [i['IP'] for i in self.net_cards if i["Type"] == 'Private']
-
-    @property
-    def public_ips(self):
-        return [i['IP'] for i in self.net_cards if i["Type"] != 'Private']
-
-    @property
-    def eip(self):
-        return [self.request.eip.get(i['IPId']) for i in self.net_cards if i["Type"] != 'Private']
-
-    @property
-    def id(self):
-        return self.info.UHostId
-
-    @property
-    def tag(self):
-        return self.info.Tag
-
-    @property
-    def network_state(self):
-        return self.info.NetworkState
-
-    @property
-    def cpu(self):
-        return self.info.CPU
-
-    @property
-    def gpu(self):
-        return self.info.GPU
-
-    @property
-    def memory(self):
-        return self.info.Memory
-
-    @tag.setter
-    def tag(self, value):
-        tags = [i['Tag'] for i in self.request.tags]
-        if value not in tags:
-            raise ValueError
-        action = ModifyUHostInstanceTag(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        action.set_tag(value)
-        self.request.client.get(action)
-        self.reload()
-
-    @property
-    def name(self):
-        return self.info.Name
-
-    @name.setter
-    def name(self, value):
-        action = ModifyUHostInstanceName(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        action.set_name(value)
-        self.request.client.get(action)
-        self.reload()
-
-    @property
-    def remark(self):
-        return self.info.Remark
-
-    @remark.setter
-    def remark(self, value):
-        action = ModifyUHostInstanceRemark(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        action.set_remark(value)
-        self.request.client.get(action)
-        self.reload()
-
-    @property
-    def auto_renew(self):
-        return self.info.AutoRenew == 'Yes'
-
-    @property
-    def create_time(self):
-        return self.info.CreateTime
-
-    @property
-    def expire_time(self):
-        return self.info.ExpireTime
-
-    @property
-    def charge_type(self):
-        return self.info.ChargeType
-
-    @property
-    def state(self):
-        return self.info.State
-
-    @property
-    def storage_type(self):
-        return self.info.StorageType
-
-    def add_to_vserver(self, ulb_id, vserver_id, port):
-        ulb = self.request.ulb.get(ulb_id)
-        if isinstance(ulb, ULBInstance):
-            vserver = ulb.get_vserver(vserver_id)
-            if isinstance(vserver, VServerSet):
-                return vserver.add_backend(self.id, port)
-        return None
-
-    def reboot(self):
-        action = RebootUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        return self.request.client.get(action)
-
-    def start(self):
-        action = StartUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        return self.request.client.get(action)
-
-    def stop(self):
-        action = StopUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        return self.request.client.get(action)
-
-    def make_snapshot(self):
-        action = CreateUHostInstanceSnapshot(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
-        return self.request.client.get(action)
-
-    def reload(self):
-        action = DescribeUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_ids([self.id])
-        response = self.request.client.get(action)
-        self.info = Dict(response[0])
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}<{self.id}-{self.info.Name}>'
-
-
-class UHost:
-
-    def __init__(self, request):
-        self.request = request
-
-    @property
-    def instances(self):
-        action = DescribeUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        return [UHostInstance(self.request, **i) for i in self.request.client.get(action)]
-
-    def get(self, host_id) -> UHostInstance:
-        for i in self.instances:
-            if i.id == host_id:
-                return i
-        else:
-            raise UHostNotFound(host_id)
-
-    def mon_overview(self):
-        action = GetMetricOverview('uhost', zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        return self.request.client.get(action)
