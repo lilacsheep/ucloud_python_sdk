@@ -335,14 +335,14 @@ class EIP:
         action = DescribeShareBandwidth(zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return [UNetShareBandwidthSet(self.request, **i) for i in self.request.client.get(action)]
 
-    def get_share_bandwidth(self, _id):
+    def get_share_bandwidth(self, _id) -> UNetShareBandwidthSet:
         for i in self.share_bandwidth:
             if i.id == _id:
                 return i
         else:
             raise ShareBandwidthFound(_id)
 
-    def get(self, eip_id):
+    def get(self, eip_id) -> UnetEIPSet:
         for i in self.instances:
             if i.id == eip_id:
                 return i

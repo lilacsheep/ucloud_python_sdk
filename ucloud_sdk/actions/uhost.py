@@ -178,10 +178,7 @@ class UHostInstance:
 
     @property
     def auto_renew(self):
-        if self.info.AutoRenew == 'Yes':
-            return True
-        else:
-            return False
+        return self.info.AutoRenew == 'Yes'
 
     @property
     def create_time(self):
@@ -251,7 +248,7 @@ class UHost:
         action = DescribeUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return [UHostInstance(self.request, **i) for i in self.request.client.get(action)]
 
-    def get(self, host_id):
+    def get(self, host_id) -> UHostInstance:
         for i in self.instances:
             if i.id == host_id:
                 return i
