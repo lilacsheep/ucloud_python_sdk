@@ -53,6 +53,7 @@ ucloud.uhost.mon_overview()
 
 ```
 instance = ucloud.uhost.get(UhostId)
+ucloud.uhost.get_many(ids) # 通过UHostId列表获取多个主机，返回一个由id为key的字典
 ```
 
 
@@ -61,6 +62,7 @@ instance = ucloud.uhost.get(UhostId)
 instance.private_ip #私有ip
 instance.public_ips #公有ip
 instance.eip #返回list, EIP实例
+instance.eip_ids #返回list, EIPId 列表
 instance.id # UhostId
 instance.tag # Uhost 业务组
 instance.network_state # Uhost 网络状态
@@ -87,6 +89,7 @@ instance.start() # 启动Uhost
 instance.stop() # 停止Uhost
 instance.make_snapshot() # 创建快照
 instance.reload() # 重新加载Uhost信息
+instance.terminate() # 销毁主机
 instance.mon(cpu=False, root_disk=False, data_disk=False, io_read=False, io_write=False, disk_ops=False,
             net_in=False, net_out=False, net_pack_in=False, net_pack_out=False, memory=False, alive_process=False,
             block_process=False, tcp_connect_num=False) # 获取监控信息，最多不能超过10个选项
@@ -103,6 +106,7 @@ ucloud.eip.unbind_eip # 所有未绑定EIP
 ucloud.eip.get(EIPId) # 通过EIPId来获取EIP实例
 ucloud.eip.share_bandwidth # 获取共享带宽
 ucloud.eip.get_share_bandwidth(ShareBandwidthId) # 通过共享带宽id来获取 带宽实例
+ucloud.eip.get_many(ids) # 通过EIPId列表获取多个主机，返回一个由EIPId为key的字典
 ```
 
 ### 创建EIP

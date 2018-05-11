@@ -4,7 +4,7 @@ from ucloud_sdk.actions.base import RegionAction
 
 __all__ = ['DescribeUHostInstance', 'StopUHostInstance', 'CreateUHostInstance', 'StartUHostInstance', 'RebootUHostInstance',
            'ModifyUHostInstanceRemark', 'CreateUHostInstanceSnapshot', 'ModifyUHostInstanceName', 'ModifyUHostInstanceTag',
-           'DescribeUHostTags'
+           'DescribeUHostTags', 'TerminateUHostInstance'
            ]
 
 
@@ -97,7 +97,6 @@ class CreateUHostInstance(RegionAction):
         self.set_params('DiskSpace', num)
 
 
-
 class StartUHostInstance(StopUHostInstance):
     name = 'StartUHostInstance'
 
@@ -149,3 +148,10 @@ class DescribeUHostTags(RegionAction):
     response = 'TagSet'
 
 
+class TerminateUHostInstance(StopUHostInstance):
+    name = 'TerminateUHostInstance'
+    response = 'UHostIds'
+    uri = '/'
+
+    def set_destroy(self, status=1):
+        self.set_params('Destroy', status)

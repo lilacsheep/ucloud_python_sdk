@@ -213,6 +213,9 @@ class EIP:
         else:
             raise EIPNotFound(eip_id)
 
+    def get_many(self, ids):
+        return {i.id: i for i in self.instances if i.id in ids}
+
     def create_eip(self, operator_name, bandwidth=2, charge_type='Month',
                    name=None, tag=None, remark=None, share_bandwidth=None) -> UNetEIPSet:
         action = AllocateEIP(operator_name=operator_name, bandwidth=bandwidth, charge_type=charge_type,

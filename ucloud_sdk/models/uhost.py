@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from addict import Dict
 from ucloud_sdk.exception import UHostNotFound, UCloudException
-from ucloud_sdk.actions.umon import GetMetric, GetMetricOverview
 from ucloud_sdk.actions.uhost import *
+from ucloud_sdk.models.ulb import *
 
 
 class UHostInstance:
@@ -57,6 +56,10 @@ class UHostInstance:
     @property
     def eip(self):
         return [self.request.eip.get(i['IPId']) for i in self.net_cards if i["Type"] != 'Private']
+
+    @property
+    def eip_ids(self):
+        return [i['IPId'] for i in self.net_cards if i["Type"] != 'Private']
 
     @property
     def id(self):
@@ -154,13 +157,16 @@ class UHostInstance:
     def start(self):
         action = StartUHostInstance(host_id=self.id,
             zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
         return self.request.client.get(action)
 
     def stop(self):
         action = StopUHostInstance(host_id=self.id,
             zone_id=self.request.zone.id, region_id=self.request.zone.region)
-        action.set_host_id(self.id)
+        return self.request.client.get(action)
+
+    def terminate(self):
+        self.stop()
+        action = TerminateUHostInstance(host_id=self.id, zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return self.request.client.get(action)
 
     def make_snapshot(self):
@@ -195,6 +201,9 @@ class UHost:
                 return i
         else:
             raise UHostNotFound(host_id)
+
+    def get_many(self, ids):
+        return {i.id: i for i in self.instances if i.id in ids}
 
     def mon_overview(self):
         action = GetMetricOverview('uhost', zone_id=self.request.zone.id, region_id=self.request.zone.region)
