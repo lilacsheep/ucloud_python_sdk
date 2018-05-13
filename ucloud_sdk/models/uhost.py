@@ -195,8 +195,8 @@ class UHostInstance:
 
     def upgrade_to_ark(self):
         if not self.time_machine_feature:
-            if self.is_running:
-                self.stop()
+            if not self.is_stopped:
+                raise UCloudException(f'UHost: {self.id} must be stopped now: {self.state}')
             action = UpgradeToArkUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
             action.set_ids([self.id])
             return self.request.client.get(action)
