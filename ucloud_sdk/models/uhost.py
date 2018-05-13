@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from ucloud_sdk.exception import UHostNotFound, UCloudException
+from ucloud_sdk.exception import UHostNotFound, UCloudException, UHostAlreadyIsARK
 from ucloud_sdk.actions.uhost import *
 from ucloud_sdk.models.ulb import *
 
@@ -138,8 +138,20 @@ class UHostInstance:
         return self.info.State
 
     @property
+    def is_running(self):
+        return self.state == 'Running'
+
+    @property
+    def is_stopped(self):
+        return self.state == 'Stopped'
+
+    @property
     def storage_type(self):
         return self.info.StorageType
+
+    @property
+    def time_machine_feature(self):
+        return self.info.TimemachineFeature == 'yes'
 
     def add_to_vserver(self, ulb_id, vserver_id, port):
         ulb = self.request.ulb.get(ulb_id)
@@ -180,6 +192,16 @@ class UHostInstance:
         action.set_ids([self.id])
         response = self.request.client.get(action)
         self.info = Dict(response[0])
+
+    def upgrade_to_ark(self):
+        if not self.time_machine_feature:
+            if self.is_running:
+                self.stop()
+            action = UpgradeToArkUHostInstance(zone_id=self.request.zone.id, region_id=self.request.zone.region)
+            action.set_ids([self.id])
+            return self.request.client.get(action)
+        else:
+            raise UHostAlreadyIsARK(self.id)
 
     def __repr__(self):
         return f'{self.__class__.__name__}<{self.id}-{self.info.Name}>'

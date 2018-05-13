@@ -70,6 +70,8 @@ instance.cpu # Uhost CPU数量
 instance.gpu # Uhost GPU数量
 instance.memory # Uhost 内存大小
 
+instance.is_running # UHost 是否开启返回bool值
+instance.is_stopped # UHost 是否关闭返回bool值
 instance.name # Uhost 名称 默认：Uhost
 instance.remark # Uhost 备注
 instance.auto_renew # Uhost 是否自动续费
@@ -90,6 +92,7 @@ instance.stop() # 停止Uhost
 instance.make_snapshot() # 创建快照
 instance.reload() # 重新加载Uhost信息
 instance.terminate() # 销毁主机
+instance.upgrade_to_ark() # 升级主机为数据方舟
 instance.mon(cpu=False, root_disk=False, data_disk=False, io_read=False, io_write=False, disk_ops=False,
             net_in=False, net_out=False, net_pack_in=False, net_pack_out=False, memory=False, alive_process=False,
             block_process=False, tcp_connect_num=False) # 获取监控信息，最多不能超过10个选项

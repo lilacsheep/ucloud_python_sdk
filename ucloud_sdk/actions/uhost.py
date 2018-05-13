@@ -4,7 +4,7 @@ from ucloud_sdk.actions.base import RegionAction
 
 __all__ = ['DescribeUHostInstance', 'StopUHostInstance', 'CreateUHostInstance', 'StartUHostInstance', 'RebootUHostInstance',
            'ModifyUHostInstanceRemark', 'CreateUHostInstanceSnapshot', 'ModifyUHostInstanceName', 'ModifyUHostInstanceTag',
-           'DescribeUHostTags', 'TerminateUHostInstance'
+           'DescribeUHostTags', 'TerminateUHostInstance', 'UpgradeToArkUHostInstance'
            ]
 
 
@@ -155,3 +155,9 @@ class TerminateUHostInstance(StopUHostInstance):
 
     def set_destroy(self, status=1):
         self.set_params('Destroy', status)
+
+
+class UpgradeToArkUHostInstance(DescribeUHostInstance):
+    name = 'UpgradeToArkUHostInstance'
+    response = 'RetCode'
+    uri = '/'

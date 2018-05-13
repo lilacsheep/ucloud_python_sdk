@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 class UCloudException(Exception):
     pass
 
@@ -28,4 +27,8 @@ class ShareBandwidthNotFound(UCloudException):
 
 
 class VServerNotFound(UCloudException):
+    pass
+
+
+class UHostAlreadyIsARK(UCloudException):
     pass
