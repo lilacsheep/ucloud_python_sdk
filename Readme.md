@@ -56,6 +56,12 @@ instance = ucloud.uhost.get(UhostId)
 ucloud.uhost.get_many(ids) # 通过UHostId列表获取多个主机，返回一个由id为key的字典
 ```
 
+### 创建UHost实例
+```
+ucloud.uhost.create()
+#image_id, password, cpu=4, memory=8192, name=None, tag=None, remark=None, charge_type='Month', quantity=0,
+               boot_disk_space=20, disk_space=20, uhost_type='N1', eip_operator_name='Bgp', eip_share_bandwidth=None
+```
 
 ### UHost 信息
 ```

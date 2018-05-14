@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from ucloud_sdk.actions.base import RegionAction
+import base64
 
 __all__ = ['DescribeUHostInstance', 'StopUHostInstance', 'CreateUHostInstance', 'StartUHostInstance', 'RebootUHostInstance',
            'ModifyUHostInstanceRemark', 'CreateUHostInstanceSnapshot', 'ModifyUHostInstanceName', 'ModifyUHostInstanceTag',
@@ -42,7 +43,7 @@ class StopUHostInstance(RegionAction):
 class CreateUHostInstance(RegionAction):
     name = 'CreateUHostInstance'
     uri = '/'
-    response = 'RetCode'
+    response = 'UHostIds'
 
     def __init__(self, image_id, password, **kwargs):
         super(CreateUHostInstance, self).__init__(**kwargs)
@@ -87,7 +88,10 @@ class CreateUHostInstance(RegionAction):
         self.set_params('LoginMode', mode)
 
     def set_password(self, password):
-        self.set_params('Password', password)
+        if isinstance(password, str):
+            password = bytes(password, encoding='utf8')
+        password = base64.b64encode(password)
+        self.set_params('Password', password.decode())
 
     def set_boot_disk_space(self, num=10):
         self.set_params('BootDiskSpace', num)

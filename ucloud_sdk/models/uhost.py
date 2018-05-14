@@ -227,6 +227,32 @@ class UHost:
     def get_many(self, ids):
         return {i.id: i for i in self.instances if i.id in ids}
 
+    def create(self, image_id, password, cpu=4, memory=8192, name=None, tag=None, remark=None, charge_type='Month', quantity=0,
+               boot_disk_space=20, disk_space=20, uhost_type='N1', eip_operator_name='Bgp', eip_share_bandwidth=None):
+        action = CreateUHostInstance(image_id, password,
+            zone_id=self.request.zone.id, region_id=self.request.zone.region
+        )
+        action.set_cpu(cpu)
+        action.set_memory(memory)
+        if isinstance(name, str):
+            action.set_name(name)
+        if isinstance(tag, str):
+            action.set_tag(tag)
+        action.set_charge_type(charge_type)
+        action.set_quantity(quantity)
+        action.set_boot_disk_space(boot_disk_space)
+        action.set_disk_space(disk_space)
+        action.set_login_mode()
+        action.set_uhost_type(uhost_type)
+        uhost_id = self.request.client.get(action)[0]
+        uhost = self.get(uhost_id)
+        if isinstance(remark, str):
+            uhost.remark = remark
+
+        eip = self.request.eip.create_eip(eip_operator_name, bandwidth=2, charge_type=charge_type,
+                   name=name, tag=tag, remark=remark, share_bandwidth=eip_share_bandwidth)
+        eip.bind(uhost)
+
     def mon_overview(self):
         action = GetMetricOverview('uhost', zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return self.request.client.get(action)
