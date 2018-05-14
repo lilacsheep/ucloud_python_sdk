@@ -228,7 +228,8 @@ class UHost:
         return {i.id: i for i in self.instances if i.id in ids}
 
     def create(self, image_id, password, cpu=4, memory=8192, name=None, tag=None, remark=None, charge_type='Month', quantity=0,
-               boot_disk_space=20, disk_space=20, uhost_type='N1', eip_operator_name='Bgp', eip_share_bandwidth=None):
+               boot_disk_space=20, disk_space=20, uhost_type='N1', eip_operator_name=None, eip_share_bandwidth=None,
+               bandwidth=2) -> UHostInstance:
         action = CreateUHostInstance(image_id, password,
             zone_id=self.request.zone.id, region_id=self.request.zone.region
         )
@@ -249,9 +250,11 @@ class UHost:
         if isinstance(remark, str):
             uhost.remark = remark
 
-        eip = self.request.eip.create_eip(eip_operator_name, bandwidth=2, charge_type=charge_type,
-                   name=name, tag=tag, remark=remark, share_bandwidth=eip_share_bandwidth)
-        eip.bind(uhost)
+        if isinstance(eip_operator_name, str):
+            eip = self.request.eip.create_eip(eip_operator_name, bandwidth=bandwidth, charge_type=charge_type,
+                       name=name, tag=tag, remark=remark, share_bandwidth=eip_share_bandwidth)
+            eip.bind(uhost)
+        return uhost
 
     def mon_overview(self):
         action = GetMetricOverview('uhost', zone_id=self.request.zone.id, region_id=self.request.zone.region)
