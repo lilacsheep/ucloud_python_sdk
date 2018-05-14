@@ -177,7 +177,6 @@ class UHostInstance:
         return self.request.client.get(action)
 
     def terminate(self):
-        self.stop()
         action = TerminateUHostInstance(host_id=self.id, zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return self.request.client.get(action)
 

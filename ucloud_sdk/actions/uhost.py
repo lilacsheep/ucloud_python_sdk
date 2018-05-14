@@ -154,7 +154,7 @@ class DescribeUHostTags(RegionAction):
 
 class TerminateUHostInstance(StopUHostInstance):
     name = 'TerminateUHostInstance'
-    response = 'UHostIds'
+    response = 'RetCode'
     uri = '/'
 
     def set_destroy(self, status=1):
