@@ -215,6 +215,9 @@ class ULB:
         else:
             raise ULBNotFound(ulb_id)
 
+    def get_many(self, ids):
+        return {i.id: i for i in self.instances if i.id in ids}
+
     def mon_overview(self):
         action = GetMetricOverview(self._type, zone_id=self.request.zone.id, region_id=self.request.zone.region)
         return self.request.client.get(action)

@@ -188,6 +188,7 @@ share.new_eip() # 在该共享带宽中创建EIP
 ucloud.ulb.instances #获取所有ULB实例
 ulb = ucloud.ulb.get(ulb_id) # 通过ULBId获取ULB实例
 ucloud.ulb.mon_overview() # 获取所有ULB监控概览
+ucloud.ulb.get_many(ids) # 通过ULBId列表获取实例
 ```
 
 ### ULB 创建
