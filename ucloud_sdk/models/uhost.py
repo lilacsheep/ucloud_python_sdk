@@ -253,6 +253,7 @@ class UHost:
             eip = self.request.eip.create_eip(eip_operator_name, bandwidth=bandwidth, charge_type=charge_type,
                        name=name, tag=tag, remark=remark, share_bandwidth=eip_share_bandwidth)
             eip.bind(uhost)
+            uhost = self.get(uhost.id)
         return uhost
 
     def mon_overview(self):
