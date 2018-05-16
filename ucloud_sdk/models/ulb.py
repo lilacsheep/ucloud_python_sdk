@@ -124,10 +124,7 @@ class ULBInstance:
 
     @property
     def ip_set(self):
-        if len(self.info.IPSet):
-            temp = self.info.IPSet[0]
-            return temp['OperatorName'], temp['EIP']
-        return None, None
+        return [i['EIP'] for i in self.info.IPSet]
 
     @property
     def vserver(self):
