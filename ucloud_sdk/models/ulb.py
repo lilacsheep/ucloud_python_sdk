@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from addict import Dict
-from ucloud_sdk.exception import ULBNotFound, VServerNotFound
+from ucloud_sdk.exception import ULBNotFound, VServerNotFound, BackendNoFound
 from ucloud_sdk.actions.umon import GetMetricOverview, GetMetric
 from ucloud_sdk.actions.ulb import *
 
@@ -75,6 +75,8 @@ class VServerSet:
         for i in self.backends:
             if i.id == backend_id:
                 return i
+        else:
+            raise BackendNoFound(backend_id)
 
     def add_backend(self, resource, port, _type='UHost'):
         action = AllocateBackend(ulb_id=self.ulb.id, vserver_id=self.id, host_id=resource.id, port=port, _type=_type,

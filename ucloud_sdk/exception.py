@@ -18,6 +18,10 @@ class ULBNotFound(UCloudException):
     pass
 
 
+class BackendNoFound(UCloudException):
+    pass
+
+
 class ProjectNotFound(UCloudException):
     pass
 
