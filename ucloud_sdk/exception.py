@@ -18,7 +18,7 @@ class ULBNotFound(UCloudException):
     pass
 
 
-class BackendNoFound(UCloudException):
+class BackendNotFound(UCloudException):
     pass
 
 
