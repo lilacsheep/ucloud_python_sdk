@@ -40,6 +40,9 @@ class RegionAction(BaseAction):
     def set_zone(self, zone_id):
         self.set_params('Zone', zone_id)
 
+    def set_offset(self, offset):
+        self.set_params('Offset', offset)
+
     def set_limit(self, limit):
         self.set_params('Limit', limit)
 

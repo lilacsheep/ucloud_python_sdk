@@ -272,4 +272,9 @@ backend = vserver.add_backend(self, resource, port, _type='UHost') # 添加Backe
 backend.release() # 释放backend
 ```
 
-# TODO: URedis, UDB等
+# URedis, UMemcache, 集群和单点 的增删改操作
+
+## TODO: 操作文档
+
+
+# TODO: UDB等
