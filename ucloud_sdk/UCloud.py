@@ -4,6 +4,7 @@ from ucloud_sdk.models.uhost import UHost
 from ucloud_sdk.models.ulb import ULB
 from ucloud_sdk.models.eip import EIP
 from ucloud_sdk.models.umem import UMem
+from ucloud_sdk.models.udb import UDB
 from ucloud_sdk.actions.sms import SendSms
 from ucloud_sdk.actions.region import GetRegion
 from ucloud_sdk.client import UcloudApiClient
@@ -50,6 +51,7 @@ class UCloud:
         self.ulb = ULB(self)
         self.eip = EIP(self)
         self.umem = UMem(self)
+        self.udb = UDB(self)
 
     def send_sms(self, phone, context):
         action = SendSms(phone, context)
